@@ -1,0 +1,47 @@
+name: Import Lane and Brew supplied assets
+on:
+  push:
+    paths:
+      - '.github/workflows/import-day8-assets.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.repository == 'Patu-art/Day-8'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download six user-supplied brand assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/brand
+          curl -fLsS --retry 4 --connect-timeout 20 'https://d2ol7oe51mr4n9.cloudfront.net/user_3J3dJDO4kVRMf5UPwJeCA5xocmE/356a20da-f412-4535-bd34-ab09085ace1b.png' -o 'assets/brand/01-hero-interior.png'
+          curl -fLsS --retry 4 --connect-timeout 20 'https://d2ol7oe51mr4n9.cloudfront.net/user_3J3dJDO4kVRMf5UPwJeCA5xocmE/e278d5dd-894d-4965-b541-16b3733695d7.png' -o 'assets/brand/02-morning.png'
+          curl -fLsS --retry 4 --connect-timeout 20 'https://d2ol7oe51mr4n9.cloudfront.net/user_3J3dJDO4kVRMf5UPwJeCA5xocmE/182e08a4-d129-42f1-83bd-ba303166f350.png' -o 'assets/brand/03-afternoon.png'
+          curl -fLsS --retry 4 --connect-timeout 20 'https://d2ol7oe51mr4n9.cloudfront.net/user_3J3dJDO4kVRMf5UPwJeCA5xocmE/774fbf72-cdc2-451a-b098-b0de68963b26.png' -o 'assets/brand/04-evening.png'
+          curl -fLsS --retry 4 --connect-timeout 20 'https://d2ol7oe51mr4n9.cloudfront.net/user_3J3dJDO4kVRMf5UPwJeCA5xocmE/1d740b9f-9a22-4fd3-bffb-dd07978359cb.png' -o 'assets/brand/05-venue.png'
+          curl -fLsS --retry 4 --connect-timeout 20 'https://d2ol7oe51mr4n9.cloudfront.net/user_3J3dJDO4kVRMf5UPwJeCA5xocmE/de8badbd-78a2-48e3-add7-22174e89a8d8.png' -o 'assets/brand/06-logo.png'
+          cat > /tmp/brand.sha256 <<'EOF'
+          a84b9b3c118aca06e894b3d2b7765a0021f561dcf35a380fc8d0821b8f86c057  assets/brand/01-hero-interior.png
+          b65542fe39293fb7f0b4c0d02c268d8ab4971225af5f44bf595573ee248fc32a  assets/brand/02-morning.png
+          54c14f81b36b9af521fa0ab0732b8fffc91e1d0484a8a02e5bd51fac6ec8abbc  assets/brand/03-afternoon.png
+          88d5f8881c8482afcdad7db685ec055718bc0384d7bbdd9a2ff4981562c265c2  assets/brand/04-evening.png
+          bd32cfa80a95c786ef41c89444c0285daedec9936f2c57f863f659700268a8a7  assets/brand/05-venue.png
+          ca4acc53ca5dc8e2228ec6640e1fada3f56bbd8f66df2766a131736c0c4d87ba  assets/brand/06-logo.png
+          EOF
+          sha256sum --check /tmp/brand.sha256
+      - name: Commit local images
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brand
+          if ! git diff --staged --quiet; then
+            git commit -m 'Add six real Lane and Brew photos and logo'
+            git push
+          fi
