@@ -2,7 +2,7 @@
 
 An unofficial, frontend-only restaurant website concept for Lane & Brew, 83 Lark Lane, Liverpool L17 8UP.
 
-Live preview: https://patu-art.github.io/Day-8/
+[Live preview](https://patu-art.github.io/Day-8/) · [Portfolio](https://patu-art.github.io/Portfolio/) · [Challenge log](https://patu-art.github.io/Portfolio/challenge.html)
 
 ## What changed
 
